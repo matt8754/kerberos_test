@@ -34,7 +34,7 @@ Vagrant.configure("2") do |config|
     client.vm.network :forwarded_port, guest: 443, host: 2443
     client.vm.network :private_network, ip: "192.168.19.20"
     client.vm.hostname = "client.example.com"
-    client.vm.synced_folder "MemeGen/", "/var/www/MemeGen"
+    client.vm.synced_folder "website/", "/var/www/website"
     client.vm.provision :shell, :inline => $CLIENT_SCRIPT
   end
 end
