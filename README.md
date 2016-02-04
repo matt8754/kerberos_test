@@ -39,8 +39,7 @@ This is not recommended in general, because it requires the service to have
 permission to read the system keytab, which is usually root-only.
 
 ```sh
-vagrant ssh client
-vagrant@client ~]$ sudo ktutil
+[vagrant@client ~]$ sudo ktutil
 ktutil:  read_kt /etc/krb5.keytab
 ktutil:  read_kt /vagrant/http.keytab
 ktutil:  list
@@ -55,14 +54,13 @@ slot KVNO Principal
    7    1      HTTP/client.example.com@EXAMPLE.COM
    8    1      HTTP/client.example.com@EXAMPLE.COM
 ktutil:  write_kt /etc/krb5.keytab
-ktutil:  ^D
 ```
 
 To check if the principal was written correctly, try authenticating as the
 service using the system keytab:
 
 ```sh
-sudo kinit -kt /etc/krb5.keytab HTTP/client.example.com
+[vagrant@client ~]$ sudo kinit -kt /etc/krb5.keytab HTTP/client.example.com
 ```
 
 # Setting up your machine with Kerberos
