@@ -20,10 +20,27 @@ hostname $(hostname -f)
 hostname > /etc/hostname
 EOF
 
+# NetworkManager overwrites /etc/resolv.conf at boot.. just change it back.
+$RESOLV_SCRIPT = <<EOF
+cp /vagrant/config/resolv.conf /etc/resolv.conf
+EOF
+
 Vagrant.configure("2") do |config|
   config.vm.box = "Fedora-18-VBox"
   config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/fedora-18-x64-vbox4210.box"
-  
+
+  if Vagrant.has_plugin?("vagrant-cachier")
+    # Configure cached packages to be shared between instances of the same base box.
+    # More info on the "Usage" link above
+    config.cache.scope = :box
+  end
+
+  if !Vagrant.has_plugin?("vagrant-hostsupdater")
+    # Update /etc/hosts
+    puts 'Install the required plugin `vagrant-hostsupdate` to sync /etc/hosts with the VMs:'
+    puts '  $ vagrant plugin install vagrant-hostsupdater'
+  end
+
   config.vm.define :ipaserver do |ipaserver|
     ipaserver.vm.network :forwarded_port, guest: 80, host: 8080
     ipaserver.vm.network :forwarded_port, guest: 443, host: 1443
@@ -31,6 +48,7 @@ Vagrant.configure("2") do |config|
     ipaserver.vm.hostname = "ipaserver.example.com"
     ipaserver.vm.provision :shell, :inline => $HOSTNAME_SCRIPT
     ipaserver.vm.provision :shell, :inline => $SERVER_SCRIPT
+    ipaserver.vm.provision :shell, :inline => $RESOLV_SCRIPT, :run => 'always'
   end
 
   config.vm.define :client do |client|
@@ -38,8 +56,8 @@ Vagrant.configure("2") do |config|
     client.vm.network :forwarded_port, guest: 443, host: 2443
     client.vm.network :private_network, ip: "192.168.19.20"
     client.vm.hostname = "client.example.com"
-    client.vm.synced_folder "website/", "/var/www/website"
     client.vm.provision :shell, :inline => $HOSTNAME_SCRIPT
     client.vm.provision :shell, :inline => $CLIENT_SCRIPT
+    client.vm.provision :shell, :inline => $RESOLV_SCRIPT, :run => 'always'
   end
 end

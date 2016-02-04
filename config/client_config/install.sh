@@ -20,7 +20,7 @@ echo "Disabling updates-testing repo ..."
 sed -i 's/enabled=1/enabled=0/g' /etc/yum.repos.d/fedora-updates-testing.repo
 
 echo "Downloading packages ..."
-yum install freeipa-client freeipa-admintools httpd mod_auth_kerb -y
+yum install freeipa-client freeipa-admintools mod_auth_kerb -y
 
 echo "Configuring firewalld ..."
 firewall-cmd --permanent --zone=public --add-port  80/tcp
@@ -57,13 +57,13 @@ echo "Enrolling Apache as a service on the IPA Server"
 ipa service-add HTTP/$CLIENT_FQDN
 
 echo "Getting keytab from IPA Server to Client"
-ipa-getkeytab -s $SERVER_FQDN -p HTTP/$CLIENT_FQDN -k /etc/httpd/http.keytab
+ipa-getkeytab -s $SERVER_FQDN -p HTTP/$CLIENT_FQDN -k /vagrant/http.keytab
 
 echo "Changing ownership of keytab"
-chown apache:apache /etc/httpd/http.keytab
+chown vagrant:vagrant /vagrant/http.keytab
 
-echo "Testing Apache keytab"
-kinit -kt /etc/httpd/http.keytab -p HTTP/$CLIENT_FQDN
+echo "Testing  keytab"
+kinit -kt /vagrant/http.keytab -p HTTP/$CLIENT_FQDN
 
 echo "Re-kiniting as admin"
 echo $PASSWORD | kinit admin
