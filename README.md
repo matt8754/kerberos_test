@@ -84,7 +84,7 @@ example.com = EXAMPLE.COM
 default_realm = EXAMPLE.COM
 ```
 
-You will now be able to execute `kinit admin` to authenticate with the KDC.
+You will now be able to execute `kinit admin` (password: `aaaAAA111`) to authenticate with the KDC.
 Once you have done so, you can open `http://ipaserver.example.com` in a browser
 to administrate the server. You should be authenticated automatically - if not, you might need to [setup your browser](#BrowserSetup)
 
