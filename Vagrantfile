@@ -26,8 +26,8 @@ cp /vagrant/config/resolv.conf /etc/resolv.conf
 EOF
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "Fedora-18-VBox"
-  config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/fedora-18-x64-vbox4210.box"
+  config.vm.box = "fedora/23-cloud-base"
+  #config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/fedora-18-x64-vbox4210.box"
 
   if Vagrant.has_plugin?("vagrant-cachier")
     # Configure cached packages to be shared between instances of the same base box.
@@ -49,6 +49,10 @@ Vagrant.configure("2") do |config|
     ipaserver.vm.provision :shell, :inline => $HOSTNAME_SCRIPT
     ipaserver.vm.provision :shell, :inline => $SERVER_SCRIPT
     ipaserver.vm.provision :shell, :inline => $RESOLV_SCRIPT, :run => 'always'
+    ipaserver.vm.provider :libvirt do |domain|
+        domain.memory = 2048
+        domain.cpus = 2
+    end
   end
 
   config.vm.define :client do |client|
@@ -59,5 +63,9 @@ Vagrant.configure("2") do |config|
     client.vm.provision :shell, :inline => $HOSTNAME_SCRIPT
     client.vm.provision :shell, :inline => $CLIENT_SCRIPT
     client.vm.provision :shell, :inline => $RESOLV_SCRIPT, :run => 'always'
+    client.vm.provider :libvirt do |domain|
+        domain.memory = 2048
+        domain.cpus = 2
+    end
   end
 end

@@ -23,6 +23,10 @@ echo "Downloading packages ..."
 yum install freeipa-client freeipa-admintools mod_auth_kerb -y
 
 echo "Configuring firewalld ..."
+yum install -y firewalld
+systemctl enable firewalld
+systemctl start firewalld
+
 firewall-cmd --permanent --zone=public --add-port  80/tcp
 firewall-cmd --permanent --zone=public --add-port 443/tcp
 firewall-cmd --permanent --zone=public --add-port 389/tcp
@@ -48,7 +52,7 @@ firewall-cmd --zone=public --add-port  53/udp
 firewall-cmd --zone=public --add-port 123/udp
 
 echo "Installing IPA client ..."
-ipa-client-install --enable-dns-updates --ssh-trust-dns -p admin -w $PASSWORD -U
+ipa-client-install --enable-dns-updates --ssh-trust-dns -p admin -w $PASSWORD -U --force-join
  
 echo "Testing kinit"
 echo $PASSWORD | kinit admin

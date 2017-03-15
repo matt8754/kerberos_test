@@ -8,5 +8,5 @@ SERVER_FQDN=`hostname`
 SERVER_NAME=`hostname | cut -d. -f 1 | tr '[:upper:]' '[:lower:]'`
 IPA_REALM=EXAMPLE.COM
 IPA_DOMAIN=example.com
-FORWARDER=10.0.2.3
+FORWARDER=10.64.63.6
 PASSWORD=aaaAAA111
